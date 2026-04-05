@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dashboard from "./screens/Dashboard";
 import Cheques from "./screens/Cheques";
 import AddCheque from "./screens/AddCheque";
 import Banks from "./screens/Banks";
 import useBanks from "./hooks/useBanks";
 import useCheques from "./hooks/useCheques";
+import {
+  requestPermission,
+  registerServiceWorker,
+  setupDailyCheck,
+} from "./utils/notifications";
 
 const NAV_ITEMS = [
   {
@@ -68,6 +73,9 @@ const NAV_ITEMS = [
 function App() {
   const [activeScreen, setActiveScreen] = useState("dashboard");
   const [showAddCheque, setShowAddCheque] = useState(false);
+  const [notifStatus, setNotifStatus] = useState(
+    typeof Notification !== "undefined" ? Notification.permission : "default",
+  );
 
   const banksHook = useBanks();
   const chequesHook = useCheques();
@@ -92,6 +100,16 @@ function App() {
     openAddCheque: () => setShowAddCheque(true),
   };
 
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
+  useEffect(() => {
+    if (notifStatus !== "granted") return;
+    const cleanup = setupDailyCheck(chequesHook.cheques);
+    return cleanup;
+  }, [notifStatus, chequesHook.cheques]);
+
   const renderScreen = () => {
     if (showAddCheque) {
       return (
@@ -112,6 +130,24 @@ function App() {
 
   return (
     <div style={styles.app}>
+      {/* Notification permission banner */}
+      {notifStatus === "default" && (
+        <div style={styles.notifBanner}>
+          <p style={styles.notifText}>
+            Enable notifications to get cheque due reminders
+          </p>
+          <button
+            style={styles.notifBtn}
+            onClick={async () => {
+              const result = await requestPermission();
+              setNotifStatus(result);
+            }}
+          >
+            Enable
+          </button>
+        </div>
+      )}
+
       <div style={styles.screenArea}>{renderScreen()}</div>
 
       {!showAddCheque && (
@@ -251,6 +287,32 @@ const styles = {
     cursor: "pointer",
     flexShrink: 0,
     boxShadow: "0 2px 12px rgba(37,99,235,0.3)",
+  },
+  notifBanner: {
+    background: "#eff6ff",
+    borderBottom: "0.5px solid #bfdbfe",
+    padding: "10px 16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "12px",
+    flexShrink: 0,
+  },
+  notifText: {
+    fontSize: "12px",
+    color: "#1d4ed8",
+    lineHeight: "1.4",
+    flex: 1,
+  },
+  notifBtn: {
+    background: "#2563eb",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "6px 14px",
+    fontSize: "12px",
+    cursor: "pointer",
+    flexShrink: 0,
   },
 };
 
