@@ -4,7 +4,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<div>Dashboard — coming soon</div>} />
+        <Route
+          path="/"
+          element={
+            <div>
+              <p>Dashboard — coming soon</p>
+            </div>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
