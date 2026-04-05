@@ -80,11 +80,6 @@ function App() {
   };
 
   const handleDeleteCheque = (chequeId) => {
-    const cheque = chequesHook.getChequeById(chequeId);
-    if (!cheque) return;
-    if (cheque.status === "cleared") {
-      banksHook.refundBalance(cheque.bankId, cheque.amount);
-    }
     chequesHook.deleteCheque(chequeId);
   };
 

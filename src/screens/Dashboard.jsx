@@ -19,10 +19,15 @@ const Dashboard = ({
 
   const allBanks = [{ id: "all", name: "All banks" }, ...banks];
 
-  const filteredRecent =
+  const bankFiltered =
     activeFilter === "all"
       ? recent
       : recent.filter((c) => c.bankId === activeFilter);
+
+  const pendingRecent = bankFiltered.filter((c) => c.status === "pending");
+  const passedRecent = bankFiltered.filter(
+    (c) => c.status === "cleared" || c.status === "bounced",
+  );
 
   const getDaysUntil = (dateStr) => {
     const today = new Date();
@@ -295,16 +300,39 @@ const Dashboard = ({
           ))}
         </div>
 
-        {filteredRecent.length === 0 ? (
+        {pendingRecent.length === 0 && passedRecent.length === 0 ? (
           <div style={s.emptyBox}>
             <p style={s.emptyText}>No cheques found</p>
           </div>
         ) : (
-          <div style={s.list}>
-            {filteredRecent.map((c) => (
-              <ChequeCard key={c.id} cheque={c} showIssuedDate />
-            ))}
-          </div>
+          <>
+            {pendingRecent.length > 0 && (
+              <div style={s.list}>
+                {pendingRecent.map((c) => (
+                  <ChequeCard key={c.id} cheque={c} showIssuedDate />
+                ))}
+              </div>
+            )}
+
+            {passedRecent.length > 0 && (
+              <>
+                <p
+                  style={{
+                    ...s.sectionLabel,
+                    marginTop: pendingRecent.length > 0 ? "16px" : "0",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Cleared / bounced
+                </p>
+                <div style={s.list}>
+                  {passedRecent.map((c) => (
+                    <ChequeCard key={c.id} cheque={c} showIssuedDate />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         )}
       </div>
     </div>
