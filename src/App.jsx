@@ -1,15 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Dashboard from "./screens/Dashboard";
 import Cheques from "./screens/Cheques";
 import AddCheque from "./screens/AddCheque";
 import Banks from "./screens/Banks";
 import useBanks from "./hooks/useBanks";
 import useCheques from "./hooks/useCheques";
-import {
-  requestPermission,
-  registerServiceWorker,
-  setupDailyCheck,
-} from "./utils/notifications";
 
 const NAV_ITEMS = [
   {
@@ -70,12 +65,12 @@ const NAV_ITEMS = [
   },
 ];
 
+const SIDEBAR_WIDTH = 220;
+
 function App() {
   const [activeScreen, setActiveScreen] = useState("dashboard");
   const [showAddCheque, setShowAddCheque] = useState(false);
-  const [notifStatus, setNotifStatus] = useState(
-    typeof Notification !== "undefined" ? Notification.permission : "default",
-  );
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const banksHook = useBanks();
   const chequesHook = useCheques();
@@ -100,15 +95,10 @@ function App() {
     openAddCheque: () => setShowAddCheque(true),
   };
 
-  useEffect(() => {
-    registerServiceWorker();
-  }, []);
-
-  useEffect(() => {
-    if (notifStatus !== "granted") return;
-    const cleanup = setupDailyCheck(chequesHook.cheques);
-    return cleanup;
-  }, [notifStatus, chequesHook.cheques]);
+  const navigate = (id) => {
+    setActiveScreen(id);
+    setDrawerOpen(false);
+  };
 
   const renderScreen = () => {
     if (showAddCheque) {
@@ -128,191 +118,290 @@ function App() {
     }
   };
 
-  return (
-    <div style={styles.app}>
-      {/* Notification permission banner */}
-      {notifStatus === "default" && (
-        <div style={styles.notifBanner}>
-          <p style={styles.notifText}>
-            Enable notifications to get cheque due reminders
-          </p>
+  const SidebarContent = () => (
+    <div style={styles.sidebarInner}>
+      <div style={styles.sidebarLogo}>
+        Cheque<span style={{ color: "#2563eb" }}>Mate</span>
+      </div>
+
+      <nav style={styles.sidebarNav}>
+        {NAV_ITEMS.map((item) => (
           <button
-            style={styles.notifBtn}
-            onClick={async () => {
-              const result = await requestPermission();
-              setNotifStatus(result);
+            key={item.id}
+            style={{
+              ...styles.sidebarItem,
+              ...(activeScreen === item.id && !showAddCheque
+                ? styles.sidebarItemActive
+                : {}),
             }}
+            onClick={() => navigate(item.id)}
           >
-            Enable
+            {item.icon(activeScreen === item.id && !showAddCheque)}
+            <span
+              style={{
+                ...styles.sidebarLabel,
+                ...(activeScreen === item.id && !showAddCheque
+                  ? styles.sidebarLabelActive
+                  : {}),
+              }}
+            >
+              {item.label}
+            </span>
           </button>
-        </div>
+        ))}
+      </nav>
+
+      <button
+        style={styles.newChequeBtn}
+        onClick={() => {
+          setShowAddCheque(true);
+          setDrawerOpen(false);
+        }}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="2.2"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        New cheque
+      </button>
+    </div>
+  );
+
+  return (
+    <div style={styles.root}>
+      {/* Desktop sidebar */}
+      <aside style={styles.sidebar}>
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile top bar */}
+      <div style={styles.mobileTopbar} className="cm-mobile-topbar">
+        <button style={styles.hamburger} onClick={() => setDrawerOpen(true)}>
+          <div style={styles.hamburgerLine} />
+          <div style={styles.hamburgerLine} />
+          <div style={styles.hamburgerLine} />
+        </button>
+        <p style={styles.mobileLogoText}>
+          Cheque<span style={{ color: "#2563eb" }}>Mate</span>
+        </p>
+        <button
+          style={styles.mobileAddBtn}
+          onClick={() => setShowAddCheque(true)}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2.2"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {drawerOpen && (
+        <div style={styles.overlay} onClick={() => setDrawerOpen(false)} />
       )}
 
-      <div style={styles.screenArea}>{renderScreen()}</div>
+      {/* Mobile drawer */}
+      <div
+        style={{
+          ...styles.drawer,
+          transform: drawerOpen
+            ? "translateX(0)"
+            : `translateX(-${SIDEBAR_WIDTH}px)`,
+        }}
+      >
+        <SidebarContent />
+      </div>
 
-      {!showAddCheque && (
-        <nav style={styles.bottomNav}>
-          {NAV_ITEMS.map((item, index) => {
-            if (index === 1) {
-              return (
-                <>
-                  <button
-                    key={item.id}
-                    style={{
-                      ...styles.navItem,
-                      ...(activeScreen === item.id ? styles.navItemActive : {}),
-                    }}
-                    onClick={() => setActiveScreen(item.id)}
-                  >
-                    {item.icon(activeScreen === item.id)}
-                    <span
-                      style={{
-                        ...styles.navLabel,
-                        ...(activeScreen === item.id
-                          ? styles.navLabelActive
-                          : {}),
-                      }}
-                    >
-                      {item.label}
-                    </span>
-                  </button>
-
-                  <button
-                    key="add"
-                    style={styles.addBtn}
-                    onClick={() => setShowAddCheque(true)}
-                  >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#fff"
-                      strokeWidth="2.2"
-                    >
-                      <line x1="12" y1="5" x2="12" y2="19" />
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                  </button>
-                </>
-              );
-            }
-            return (
-              <button
-                key={item.id}
-                style={{
-                  ...styles.navItem,
-                  ...(activeScreen === item.id ? styles.navItemActive : {}),
-                }}
-                onClick={() => setActiveScreen(item.id)}
-              >
-                {item.icon(activeScreen === item.id)}
-                <span
-                  style={{
-                    ...styles.navLabel,
-                    ...(activeScreen === item.id ? styles.navLabelActive : {}),
-                  }}
-                >
-                  {item.label}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
-      )}
+      {/* Main content */}
+      <main style={styles.main}>{renderScreen()}</main>
     </div>
   );
 }
 
+const MOBILE_TOPBAR_HEIGHT = 52;
+
 const styles = {
-  app: {
+  root: {
     display: "flex",
-    flexDirection: "column",
     height: "100dvh",
-    maxWidth: "480px",
-    margin: "0 auto",
     background: "#f5f5f0",
-    position: "relative",
     overflow: "hidden",
   },
-  screenArea: {
-    flex: 1,
-    overflowY: "auto",
-    overflowX: "hidden",
-    paddingBottom: "72px",
-  },
-  bottomNav: {
-    position: "fixed",
-    bottom: 0,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: "100%",
-    maxWidth: "480px",
+
+  // Desktop sidebar
+  sidebar: {
+    width: `${SIDEBAR_WIDTH}px`,
+    flexShrink: 0,
     background: "#fff",
-    borderTop: "0.5px solid #e5e5e5",
-    display: "flex",
-    alignItems: "center",
-    padding: "8px 0 16px",
-    zIndex: 100,
+    borderRight: "0.5px solid #e5e5e5",
+    height: "100dvh",
+    overflowY: "auto",
+    display: "none", // hidden on mobile, shown via media query workaround below
   },
-  navItem: {
-    flex: 1,
+
+  sidebarInner: {
     display: "flex",
     flexDirection: "column",
+    padding: "24px 12px",
+    height: "100%",
+  },
+
+  sidebarLogo: {
+    fontSize: "20px",
+    fontWeight: "500",
+    letterSpacing: "-0.5px",
+    color: "#111",
+    padding: "0 8px 24px",
+    borderBottom: "0.5px solid #f0f0f0",
+    marginBottom: "12px",
+  },
+
+  sidebarNav: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
+    flex: 1,
+  },
+
+  sidebarItem: {
+    display: "flex",
     alignItems: "center",
-    gap: "3px",
-    padding: "4px 0",
+    gap: "10px",
+    padding: "10px 12px",
+    borderRadius: "10px",
+    border: "none",
     background: "none",
-    border: "none",
     cursor: "pointer",
+    width: "100%",
+    textAlign: "left",
   },
-  navItemActive: {},
-  navLabel: {
-    fontSize: "10px",
-    color: "#aaa",
+
+  sidebarItemActive: {
+    background: "#eff6ff",
   },
-  navLabelActive: {
+
+  sidebarLabel: {
+    fontSize: "14px",
+    color: "#666",
+  },
+
+  sidebarLabelActive: {
     color: "#2563eb",
+    fontWeight: "500",
   },
-  addBtn: {
-    width: "52px",
-    height: "52px",
-    background: "#2563eb",
-    borderRadius: "50%",
-    border: "none",
+
+  newChequeBtn: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "-20px",
-    cursor: "pointer",
-    flexShrink: 0,
-    boxShadow: "0 2px 12px rgba(37,99,235,0.3)",
-  },
-  notifBanner: {
-    background: "#eff6ff",
-    borderBottom: "0.5px solid #bfdbfe",
-    padding: "10px 16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "12px",
-    flexShrink: 0,
-  },
-  notifText: {
-    fontSize: "12px",
-    color: "#1d4ed8",
-    lineHeight: "1.4",
-    flex: 1,
-  },
-  notifBtn: {
+    gap: "8px",
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "8px",
-    padding: "6px 14px",
-    fontSize: "12px",
+    borderRadius: "10px",
+    padding: "11px 16px",
+    fontSize: "14px",
+    fontWeight: "500",
     cursor: "pointer",
-    flexShrink: 0,
+    marginTop: "16px",
+    width: "100%",
+  },
+
+  // Mobile topbar
+  mobileTopbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "0 16px",
+    height: `${MOBILE_TOPBAR_HEIGHT}px`,
+    background: "#fff",
+    borderBottom: "0.5px solid #e5e5e5",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 200,
+    // hide on desktop via inline override below
+  },
+
+  mobileLogoText: {
+    fontSize: "18px",
+    fontWeight: "500",
+    letterSpacing: "-0.5px",
+    color: "#111",
+  },
+
+  hamburger: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+    padding: "4px",
+  },
+
+  hamburgerLine: {
+    width: "20px",
+    height: "2px",
+    background: "#444",
+    borderRadius: "2px",
+  },
+
+  mobileAddBtn: {
+    width: "34px",
+    height: "34px",
+    background: "#2563eb",
+    border: "none",
+    borderRadius: "8px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  },
+
+  // Drawer
+  overlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.3)",
+    zIndex: 300,
+  },
+
+  drawer: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: `${SIDEBAR_WIDTH}px`,
+    background: "#fff",
+    borderRight: "0.5px solid #e5e5e5",
+    zIndex: 400,
+    transition: "transform 0.25s ease",
+    overflowY: "auto",
+  },
+
+  // Main content area
+  main: {
+    flex: 1,
+    overflowY: "auto",
+    overflowX: "hidden",
+    paddingTop: `${MOBILE_TOPBAR_HEIGHT}px`,
+    background: "#f5f5f0",
   },
 };
 

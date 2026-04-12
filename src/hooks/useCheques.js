@@ -80,12 +80,15 @@ const useCheques = () => {
 
   const getUpcomingCheques = (days = 7) => {
     const now = new Date();
+    now.setHours(0, 0, 0, 0);
     const limit = new Date();
     limit.setDate(limit.getDate() + days);
+    limit.setHours(23, 59, 59, 999);
     return cheques
       .filter((c) => {
         if (c.status !== "pending") return false;
         const due = new Date(c.cashInDate);
+        due.setHours(0, 0, 0, 0);
         return due >= now && due <= limit;
       })
       .sort((a, b) => new Date(a.cashInDate) - new Date(b.cashInDate));

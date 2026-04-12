@@ -50,3 +50,15 @@ select,
 textarea {
   font-family: inherit;
 }
+
+@media (min-width: 768px) {
+  /* show desktop sidebar */
+  aside {
+    display: flex !important;
+  }
+
+  /* hide mobile topbar */
+  .mobile-topbar-hide {
+    display: none !important;
+  }
+}

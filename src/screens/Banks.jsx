@@ -63,9 +63,14 @@ const Banks = ({ banks, addBank, updateBalance, deleteBank }) => {
   return (
     <div style={s.screen}>
       <div style={s.header}>
-        <span style={s.title}>Banks</span>
+        <div>
+          <p style={s.pageTitle}>Banks</p>
+          <p style={s.pageSubtitle}>
+            {banks.length} account{banks.length !== 1 ? "s" : ""}
+          </p>
+        </div>
         <button
-          style={s.addBtn}
+          style={s.headerAddBtn}
           onClick={() => {
             setShowForm(true);
             setError("");
@@ -75,102 +80,110 @@ const Banks = ({ banks, addBank, updateBalance, deleteBank }) => {
         </button>
       </div>
 
-      {/* Add Bank Form */}
-      {showForm && (
-        <div style={s.formCard}>
-          <p style={s.formTitle}>New bank account</p>
-
-          <label style={s.label}>Bank name *</label>
-          <input
-            style={s.input}
-            placeholder="e.g. Commercial Bank"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-
-          <label style={s.label}>Account number</label>
-          <input
-            style={s.input}
-            placeholder="e.g. 1234567890"
-            value={form.accountNumber}
-            onChange={(e) =>
-              setForm({ ...form, accountNumber: e.target.value })
-            }
-          />
-
-          <label style={s.label}>Current balance (LKR) *</label>
-          <input
-            style={s.input}
-            placeholder="e.g. 250000"
-            type="number"
-            value={form.balance}
-            onChange={(e) => setForm({ ...form, balance: e.target.value })}
-          />
-
-          {error && <p style={s.error}>{error}</p>}
-
-          <div style={s.formRow}>
-            <button
-              style={s.cancelBtn}
-              onClick={() => {
-                setShowForm(false);
-                setError("");
-                setForm({ name: "", accountNumber: "", balance: "" });
-              }}
-            >
-              Cancel
-            </button>
-            <button style={s.saveBtn} onClick={handleAdd}>
-              Save
-            </button>
+      <div style={s.body}>
+        {/* Add form */}
+        {showForm && (
+          <div style={s.formCard}>
+            <p style={s.formTitle}>New bank account</p>
+            <div style={s.formGrid}>
+              <div style={s.field}>
+                <label style={s.label}>Bank name *</label>
+                <input
+                  style={s.input}
+                  placeholder="e.g. Commercial Bank"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
+              </div>
+              <div style={s.field}>
+                <label style={s.label}>Account number</label>
+                <input
+                  style={s.input}
+                  placeholder="e.g. 1234567890"
+                  value={form.accountNumber}
+                  onChange={(e) =>
+                    setForm({ ...form, accountNumber: e.target.value })
+                  }
+                />
+              </div>
+              <div style={s.field}>
+                <label style={s.label}>Current balance (LKR) *</label>
+                <input
+                  style={s.input}
+                  placeholder="e.g. 250000"
+                  type="number"
+                  value={form.balance}
+                  onChange={(e) =>
+                    setForm({ ...form, balance: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            {error && <p style={s.error}>{error}</p>}
+            <div style={s.formBtns}>
+              <button
+                style={s.cancelBtn}
+                onClick={() => {
+                  setShowForm(false);
+                  setError("");
+                  setForm({ name: "", accountNumber: "", balance: "" });
+                }}
+              >
+                Cancel
+              </button>
+              <button style={s.saveBtn} onClick={handleAdd}>
+                Save bank
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Empty state */}
-      {banks.length === 0 && !showForm && (
-        <div style={s.empty}>
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#d1d5db"
-            strokeWidth="1.2"
-            style={{ marginBottom: "12px" }}
-          >
-            <rect x="3" y="6" width="18" height="13" rx="2" />
-            <path d="M8 6V5a2 2 0 014 0v1" />
-            <line x1="12" y1="11" x2="12" y2="15" />
-          </svg>
-          <p style={s.emptyText}>No bank accounts yet</p>
-          <p style={s.emptySubText}>Tap "+ Add bank" to get started</p>
-        </div>
-      )}
+        {/* Empty state */}
+        {banks.length === 0 && !showForm && (
+          <div style={s.emptyBox}>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#d1d5db"
+              strokeWidth="1.2"
+              style={{ marginBottom: "12px" }}
+            >
+              <rect x="3" y="6" width="18" height="13" rx="2" />
+              <path d="M8 6V5a2 2 0 014 0v1" />
+              <line x1="12" y1="11" x2="12" y2="15" />
+            </svg>
+            <p style={s.emptyText}>No bank accounts yet</p>
+            <p style={s.emptySubText}>Click "+ Add bank" to get started</p>
+          </div>
+        )}
 
-      {/* Bank cards */}
-      <div style={s.list}>
-        {banks.map((bank, index) => {
-          const { bg, text } = getColor(index);
-          const isEditingThis = editingBalance === bank.id;
-          const isDeletingThis = confirmDelete === bank.id;
+        {/* Bank grid */}
+        <div style={s.grid}>
+          {banks.map((bank, index) => {
+            const { bg, text } = getColor(index);
+            const isEditingThis = editingBalance === bank.id;
+            const isDeletingThis = confirmDelete === bank.id;
 
-          return (
-            <div key={bank.id} style={s.card}>
-              <div style={s.cardTop}>
-                <div style={{ ...s.avatar, background: bg, color: text }}>
-                  {getInitials(bank.name)}
+            return (
+              <div key={bank.id} style={s.card}>
+                <div style={s.cardTop}>
+                  <div style={{ ...s.avatar, background: bg, color: text }}>
+                    {getInitials(bank.name)}
+                  </div>
+                  <div style={s.cardInfo}>
+                    <p style={s.bankName}>{bank.name}</p>
+                    {bank.accountNumber && (
+                      <p style={s.accountNum}>
+                        •••• {bank.accountNumber.slice(-4)}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div style={s.cardInfo}>
-                  <p style={s.bankName}>{bank.name}</p>
-                  {bank.accountNumber && (
-                    <p style={s.accountNum}>
-                      •••• {bank.accountNumber.slice(-4)}
-                    </p>
-                  )}
-                </div>
+
                 <div style={s.balanceBlock}>
-                  <p style={s.balanceLabel}>Balance</p>
+                  <p style={s.balanceLabel}>Current balance</p>
                   <p
                     style={{
                       ...s.balanceAmount,
@@ -180,139 +193,143 @@ const Banks = ({ banks, addBank, updateBalance, deleteBank }) => {
                     {formatBalance(bank.balance)}
                   </p>
                 </div>
-              </div>
 
-              {/* Edit balance */}
-              {isEditingThis && (
-                <div style={s.editRow}>
-                  <input
-                    style={{ ...s.input, margin: 0, flex: 1 }}
-                    type="number"
-                    placeholder="New balance"
-                    value={newBalance}
-                    onChange={(e) => setNewBalance(e.target.value)}
-                    autoFocus
-                  />
-                  <button
-                    style={s.saveBtn}
-                    onClick={() => handleUpdateBalance(bank.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    style={s.cancelBtn}
-                    onClick={() => {
-                      setEditingBalance(null);
-                      setNewBalance("");
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
-
-              {/* Confirm delete */}
-              {isDeletingThis && (
-                <div style={s.confirmRow}>
-                  <p style={s.confirmText}>Delete this bank account?</p>
-                  <div style={s.formRow}>
+                {isEditingThis && (
+                  <div style={s.editRow}>
+                    <input
+                      style={{ ...s.input, flex: 1, margin: 0 }}
+                      type="number"
+                      placeholder="New balance"
+                      value={newBalance}
+                      onChange={(e) => setNewBalance(e.target.value)}
+                      autoFocus
+                    />
+                    <button
+                      style={s.saveBtn}
+                      onClick={() => handleUpdateBalance(bank.id)}
+                    >
+                      Update
+                    </button>
                     <button
                       style={s.cancelBtn}
-                      onClick={() => setConfirmDelete(null)}
+                      onClick={() => {
+                        setEditingBalance(null);
+                        setNewBalance("");
+                      }}
                     >
                       Cancel
                     </button>
+                  </div>
+                )}
+
+                {isDeletingThis && (
+                  <div style={s.confirmBox}>
+                    <p style={s.confirmText}>Delete this bank account?</p>
+                    <div style={s.confirmBtns}>
+                      <button
+                        style={s.cancelBtn}
+                        onClick={() => setConfirmDelete(null)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        style={s.deleteBtn}
+                        onClick={() => handleDelete(bank.id)}
+                      >
+                        Yes, delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {!isEditingThis && !isDeletingThis && (
+                  <div style={s.cardActions}>
                     <button
-                      style={s.deleteBtn}
-                      onClick={() => handleDelete(bank.id)}
+                      style={s.actionUpdate}
+                      onClick={() => {
+                        setEditingBalance(bank.id);
+                        setNewBalance(bank.balance);
+                        setConfirmDelete(null);
+                      }}
                     >
-                      Yes, delete
+                      Update balance
+                    </button>
+                    <button
+                      style={s.actionDelete}
+                      onClick={() => {
+                        setConfirmDelete(bank.id);
+                        setEditingBalance(null);
+                      }}
+                    >
+                      Delete
                     </button>
                   </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              {!isEditingThis && !isDeletingThis && (
-                <div style={s.cardActions}>
-                  <button
-                    style={s.actionBtn}
-                    onClick={() => {
-                      setEditingBalance(bank.id);
-                      setNewBalance(bank.balance);
-                      setConfirmDelete(null);
-                    }}
-                  >
-                    Update balance
-                  </button>
-                  <button
-                    style={{ ...s.actionBtn, ...s.actionBtnDanger }}
-                    onClick={() => {
-                      setConfirmDelete(bank.id);
-                      setEditingBalance(null);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 };
 
 const s = {
-  screen: {
-    padding: "0 0 24px",
-    minHeight: "100%",
-    background: "#f5f5f0",
-  },
+  screen: { minHeight: "100%", background: "#f5f5f0" },
   header: {
     background: "#fff",
-    padding: "16px 20px",
+    padding: "20px 28px",
     borderBottom: "0.5px solid #e5e5e5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     position: "sticky",
     top: 0,
     zIndex: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  title: {
-    fontSize: "18px",
+  pageTitle: {
+    fontSize: "22px",
     fontWeight: "500",
     color: "#111",
+    letterSpacing: "-0.3px",
   },
-  addBtn: {
+  pageSubtitle: { fontSize: "13px", color: "#aaa", marginTop: "3px" },
+  headerAddBtn: {
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "8px",
-    padding: "8px 14px",
-    fontSize: "13px",
-    cursor: "pointer",
-  },
-  formCard: {
-    background: "#fff",
-    margin: "16px",
-    borderRadius: "14px",
-    padding: "16px",
-    border: "0.5px solid #e5e5e5",
-  },
-  formTitle: {
+    borderRadius: "10px",
+    padding: "12px 22px",
     fontSize: "14px",
     fontWeight: "500",
-    color: "#111",
-    marginBottom: "14px",
+    cursor: "pointer",
   },
+  body: { padding: "28px 28px 40px", maxWidth: "900px" },
+  formCard: {
+    background: "#fff",
+    borderRadius: "14px",
+    border: "0.5px solid #e5e5e5",
+    padding: "20px",
+    marginBottom: "20px",
+  },
+  formTitle: {
+    fontSize: "15px",
+    fontWeight: "500",
+    color: "#111",
+    marginBottom: "16px",
+  },
+  formGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+    gap: "12px",
+    marginBottom: "12px",
+  },
+  field: { display: "flex", flexDirection: "column" },
   label: {
     fontSize: "12px",
     color: "#666",
-    display: "block",
-    marginBottom: "4px",
+    marginBottom: "5px",
+    fontWeight: "500",
   },
   input: {
     width: "100%",
@@ -322,18 +339,90 @@ const s = {
     fontSize: "14px",
     color: "#111",
     background: "#fafafa",
-    marginBottom: "12px",
     outline: "none",
   },
-  error: {
-    fontSize: "12px",
-    color: "#dc2626",
-    marginBottom: "10px",
-  },
-  formRow: {
+  error: { fontSize: "12px", color: "#dc2626", marginBottom: "10px" },
+  formBtns: {
     display: "flex",
     gap: "8px",
     justifyContent: "flex-end",
+    marginTop: "4px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+    gap: "12px",
+  },
+  card: {
+    background: "#fff",
+    borderRadius: "14px",
+    border: "0.5px solid #e5e5e5",
+    overflow: "hidden",
+  },
+  cardTop: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "16px 16px 0",
+  },
+  avatar: {
+    width: "44px",
+    height: "44px",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "14px",
+    fontWeight: "500",
+    flexShrink: 0,
+  },
+  cardInfo: { flex: 1, minWidth: 0 },
+  bankName: { fontSize: "15px", fontWeight: "500", color: "#111" },
+  accountNum: { fontSize: "11px", color: "#aaa", marginTop: "2px" },
+  balanceBlock: {
+    padding: "12px 16px 14px",
+    borderBottom: "0.5px solid #f0f0f0",
+  },
+  balanceLabel: {
+    fontSize: "10px",
+    color: "#aaa",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    marginBottom: "4px",
+  },
+  balanceAmount: {
+    fontSize: "20px",
+    fontWeight: "500",
+    fontVariantNumeric: "tabular-nums",
+  },
+  editRow: {
+    display: "flex",
+    gap: "8px",
+    padding: "12px 16px",
+    alignItems: "center",
+  },
+  confirmBox: { padding: "12px 16px", background: "#fafafa" },
+  confirmText: { fontSize: "13px", color: "#444", marginBottom: "10px" },
+  confirmBtns: { display: "flex", gap: "8px", justifyContent: "flex-end" },
+  cardActions: { display: "flex" },
+  actionUpdate: {
+    flex: 1,
+    padding: "11px",
+    border: "none",
+    background: "none",
+    fontSize: "13px",
+    color: "#2563eb",
+    cursor: "pointer",
+    borderRight: "0.5px solid #f0f0f0",
+  },
+  actionDelete: {
+    flex: 1,
+    padding: "11px",
+    border: "none",
+    background: "none",
+    fontSize: "13px",
+    color: "#dc2626",
+    cursor: "pointer",
   },
   cancelBtn: {
     background: "none",
@@ -362,114 +451,15 @@ const s = {
     fontSize: "13px",
     cursor: "pointer",
   },
-  list: {
-    padding: "16px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-  card: {
+  emptyBox: {
     background: "#fff",
     borderRadius: "14px",
     border: "0.5px solid #e5e5e5",
-    overflow: "hidden",
-  },
-  cardTop: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    padding: "14px",
-  },
-  avatar: {
-    width: "42px",
-    height: "42px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "14px",
-    fontWeight: "500",
-    flexShrink: 0,
-  },
-  cardInfo: {
-    flex: 1,
-    minWidth: 0,
-  },
-  bankName: {
-    fontSize: "14px",
-    fontWeight: "500",
-    color: "#111",
-  },
-  accountNum: {
-    fontSize: "11px",
-    color: "#aaa",
-    marginTop: "2px",
-  },
-  balanceBlock: {
-    textAlign: "right",
-    flexShrink: 0,
-  },
-  balanceLabel: {
-    fontSize: "10px",
-    color: "#aaa",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  },
-  balanceAmount: {
-    fontSize: "15px",
-    fontWeight: "500",
-    marginTop: "2px",
-    fontVariantNumeric: "tabular-nums",
-  },
-  editRow: {
-    display: "flex",
-    gap: "8px",
-    padding: "0 14px 14px",
-    alignItems: "center",
-  },
-  confirmRow: {
-    padding: "0 14px 14px",
-  },
-  confirmText: {
-    fontSize: "13px",
-    color: "#444",
-    marginBottom: "10px",
-  },
-  cardActions: {
-    borderTop: "0.5px solid #f0f0f0",
-    display: "flex",
-  },
-  actionBtn: {
-    flex: 1,
-    padding: "10px",
-    border: "none",
-    background: "none",
-    fontSize: "12px",
-    color: "#2563eb",
-    cursor: "pointer",
-  },
-  actionBtnDanger: {
-    color: "#dc2626",
-    borderLeft: "0.5px solid #f0f0f0",
-  },
-  empty: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
     padding: "60px 20px",
-    color: "#aaa",
+    textAlign: "center",
   },
-  emptyText: {
-    fontSize: "15px",
-    color: "#666",
-    fontWeight: "500",
-  },
-  emptySubText: {
-    fontSize: "13px",
-    color: "#aaa",
-    marginTop: "4px",
-  },
+  emptyText: { fontSize: "15px", color: "#444", fontWeight: "500" },
+  emptySubText: { fontSize: "13px", color: "#aaa", marginTop: "6px" },
 };
 
 export default Banks;

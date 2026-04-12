@@ -27,12 +27,13 @@ const Cheques = ({
     .filter((c) => activeStatus === "all" || c.status === activeStatus)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const getDaysUntil = (dateStr) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const due = new Date(dateStr);
-    due.setHours(0, 0, 0, 0);
-    return Math.round((due - today) / (1000 * 60 * 60 * 24));
+    const d = new Date(dateStr);
+    d.setHours(0, 0, 0, 0);
+    return Math.round((d - today) / (1000 * 60 * 60 * 24));
   };
 
   const getDueLabel = (dateStr) => {
@@ -64,13 +65,12 @@ const Cheques = ({
     "LKR " +
     Number(amount).toLocaleString("en-LK", { minimumFractionDigits: 2 });
 
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString("en-GB", {
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-  };
 
   const bankColors = [
     "#eff6ff|#2563eb",
@@ -100,7 +100,6 @@ const Cheques = ({
     onClearCheque(chequeId);
     setConfirmClear(null);
   };
-
   const handleDelete = (chequeId) => {
     onDeleteCheque(chequeId);
     setConfirmDelete(null);
@@ -126,7 +125,6 @@ const Cheques = ({
     return (
       <div style={{ ...s.card, borderLeftColor: urgencyBorder[urgency] }}>
         <div style={s.cardInner}>
-          {/* Row 1 — recipient + amount */}
           <div style={s.row1}>
             <div style={s.cardLeft}>
               {bank && (
@@ -147,22 +145,22 @@ const Cheques = ({
                 )}
               </div>
             </div>
-            <div style={s.amountPill}>
-              <p style={s.amount}>{formatAmount(cheque.amount)}</p>
+            <div style={s.rightCol}>
+              <div style={s.amountPill}>
+                <p style={s.amount}>{formatAmount(cheque.amount)}</p>
+              </div>
+              <span
+                style={{ ...s.statusChip, background: sc.bg, color: sc.text }}
+              >
+                {cheque.status.charAt(0).toUpperCase() + cheque.status.slice(1)}
+              </span>
             </div>
           </div>
 
-          {/* Row 2 — bank + status */}
           <div style={s.row2}>
             {bank && <span style={s.bankName}>{bank.name}</span>}
-            <span
-              style={{ ...s.statusChip, background: sc.bg, color: sc.text }}
-            >
-              {cheque.status.charAt(0).toUpperCase() + cheque.status.slice(1)}
-            </span>
           </div>
 
-          {/* Row 3 — dates */}
           <div style={s.datesRow}>
             <div style={s.dateItem}>
               <span style={s.dateLabel}>Issued</span>
@@ -175,13 +173,11 @@ const Cheques = ({
                 style={{
                   ...s.dateValue,
                   color:
-                    urgency === "overdue"
+                    urgency === "overdue" || urgency === "red"
                       ? "#dc2626"
-                      : urgency === "red"
-                        ? "#ef4444"
-                        : urgency === "amber"
-                          ? "#d97706"
-                          : "#111",
+                      : urgency === "amber"
+                        ? "#d97706"
+                        : "#111",
                 }}
               >
                 {formatDate(cheque.cashInDate)}
@@ -206,7 +202,6 @@ const Cheques = ({
             )}
           </div>
 
-          {/* Note */}
           {cheque.note && (
             <button
               style={s.noteToggle}
@@ -220,7 +215,6 @@ const Cheques = ({
           )}
         </div>
 
-        {/* Confirm clear */}
         {isClearConfirm && (
           <div style={s.confirmBox}>
             <p style={s.confirmText}>
@@ -238,7 +232,6 @@ const Cheques = ({
           </div>
         )}
 
-        {/* Confirm delete */}
         {isDeleteConfirm && (
           <div style={s.confirmBox}>
             <p style={s.confirmText}>Delete this cheque permanently?</p>
@@ -259,7 +252,6 @@ const Cheques = ({
           </div>
         )}
 
-        {/* Actions */}
         {!isClearConfirm && !isDeleteConfirm && (
           <div style={s.cardActions}>
             {cheque.status === "pending" && (
@@ -294,15 +286,16 @@ const Cheques = ({
 
   return (
     <div style={s.screen}>
-      {/* Header */}
       <div style={s.header}>
-        <span style={s.title}>Cheques</span>
-        <button style={s.addBtn} onClick={openAddCheque}>
-          + New
+        <div>
+          <p style={s.pageTitle}>Cheques</p>
+          <p style={s.pageSubtitle}>{cheques.length} total</p>
+        </div>
+        <button style={s.headerAddBtn} onClick={openAddCheque}>
+          + New cheque
         </button>
       </div>
 
-      {/* Filters */}
       <div style={s.filtersWrap}>
         <div style={s.filterRow}>
           {allBanks.map((bank) => (
@@ -334,15 +327,13 @@ const Cheques = ({
         </div>
       </div>
 
-      {/* Count */}
-      {filtered.length > 0 && (
-        <p style={s.countLabel}>
-          {filtered.length} cheque{filtered.length !== 1 ? "s" : ""}
-        </p>
-      )}
+      <div style={s.body}>
+        {filtered.length > 0 && (
+          <p style={s.countLabel}>
+            {filtered.length} cheque{filtered.length !== 1 ? "s" : ""}
+          </p>
+        )}
 
-      {/* List */}
-      <div style={s.list}>
         {filtered.length === 0 ? (
           <div style={s.emptyBox}>
             <svg
@@ -361,13 +352,17 @@ const Cheques = ({
             </svg>
             <p style={s.emptyText}>No cheques found</p>
             {cheques.length === 0 && (
-              <button style={s.emptyAction} onClick={openAddCheque}>
-                + Add first cheque
-              </button>
+              <p style={s.emptySubText}>
+                Click "+ New cheque" to add your first one
+              </p>
             )}
           </div>
         ) : (
-          filtered.map((c) => <ChequeCard key={c.id} cheque={c} />)
+          <div style={s.grid}>
+            {filtered.map((c) => (
+              <ChequeCard key={c.id} cheque={c} />
+            ))}
+          </div>
         )}
       </div>
     </div>
@@ -375,44 +370,44 @@ const Cheques = ({
 };
 
 const s = {
-  screen: {
-    minHeight: "100%",
-    background: "#f5f5f0",
-  },
+  screen: { minHeight: "100%", background: "#f5f5f0" },
   header: {
     background: "#fff",
-    padding: "16px 20px",
+    padding: "20px 28px",
     borderBottom: "0.5px solid #e5e5e5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     position: "sticky",
     top: 0,
     zIndex: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  title: {
-    fontSize: "18px",
+  pageTitle: {
+    fontSize: "22px",
     fontWeight: "500",
     color: "#111",
+    letterSpacing: "-0.3px",
   },
-  addBtn: {
+  pageSubtitle: { fontSize: "13px", color: "#aaa", marginTop: "3px" },
+  headerAddBtn: {
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "8px",
-    padding: "8px 14px",
-    fontSize: "13px",
+    borderRadius: "10px",
+    padding: "12px 22px",
+    fontSize: "14px",
+    fontWeight: "500",
     cursor: "pointer",
   },
   filtersWrap: {
     background: "#fff",
     borderBottom: "0.5px solid #e5e5e5",
-    padding: "10px 16px",
+    padding: "12px 28px",
     display: "flex",
     flexDirection: "column",
     gap: "8px",
     position: "sticky",
-    top: "57px",
+    top: "73px",
     zIndex: 9,
   },
   filterRow: {
@@ -424,8 +419,8 @@ const s = {
   chip: {
     border: "0.5px solid #e5e5e5",
     borderRadius: "20px",
-    padding: "4px 12px",
-    fontSize: "11px",
+    padding: "5px 14px",
+    fontSize: "12px",
     color: "#666",
     cursor: "pointer",
     whiteSpace: "nowrap",
@@ -437,16 +432,12 @@ const s = {
     color: "#2563eb",
     fontWeight: "500",
   },
-  countLabel: {
-    fontSize: "11px",
-    color: "#aaa",
-    padding: "10px 16px 4px",
-  },
-  list: {
-    padding: "8px 16px 32px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
+  body: { padding: "20px 28px 40px", maxWidth: "900px" },
+  countLabel: { fontSize: "12px", color: "#aaa", marginBottom: "12px" },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+    gap: "10px",
   },
   card: {
     background: "#fff",
@@ -455,9 +446,7 @@ const s = {
     borderLeft: "3px solid #e5e5e5",
     overflow: "hidden",
   },
-  cardInner: {
-    padding: "12px 14px",
-  },
+  cardInner: { padding: "14px 16px" },
   row1: {
     display: "flex",
     justifyContent: "space-between",
@@ -472,33 +461,31 @@ const s = {
     minWidth: 0,
   },
   bankDot: {
-    width: "32px",
-    height: "32px",
+    width: "34px",
+    height: "34px",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "11px",
+    fontSize: "12px",
     fontWeight: "500",
     flexShrink: 0,
   },
-  recipient: {
-    fontSize: "14px",
-    fontWeight: "500",
-    color: "#111",
-  },
-  chequeNum: {
-    fontSize: "10px",
-    color: "#aaa",
-    marginTop: "1px",
+  recipient: { fontSize: "14px", fontWeight: "500", color: "#111" },
+  chequeNum: { fontSize: "10px", color: "#aaa", marginTop: "1px" },
+  rightCol: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: "4px",
+    flexShrink: 0,
+    marginLeft: "8px",
   },
   amountPill: {
     background: "#eff6ff",
     border: "0.5px solid #bfdbfe",
     borderRadius: "8px",
     padding: "4px 10px",
-    flexShrink: 0,
-    marginLeft: "8px",
   },
   amount: {
     fontSize: "13px",
@@ -506,22 +493,14 @@ const s = {
     color: "#1d4ed8",
     fontVariantNumeric: "tabular-nums",
   },
-  row2: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "10px",
-  },
-  bankName: {
-    fontSize: "11px",
-    color: "#888",
-  },
   statusChip: {
     fontSize: "10px",
     padding: "2px 8px",
     borderRadius: "20px",
     fontWeight: "500",
   },
+  row2: { marginBottom: "10px" },
+  bankName: { fontSize: "11px", color: "#888" },
   datesRow: {
     display: "flex",
     alignItems: "center",
@@ -530,27 +509,15 @@ const s = {
     borderRadius: "8px",
     padding: "8px 10px",
   },
-  dateItem: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "2px",
-    flex: 1,
-  },
+  dateItem: { display: "flex", flexDirection: "column", gap: "2px", flex: 1 },
   dateLabel: {
     fontSize: "9px",
     color: "#aaa",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
   },
-  dateValue: {
-    fontSize: "11px",
-    fontWeight: "500",
-    color: "#111",
-  },
-  daysAway: {
-    fontWeight: "400",
-    color: "#888",
-  },
+  dateValue: { fontSize: "11px", fontWeight: "500", color: "#111" },
+  daysAway: { fontWeight: "400", color: "#888" },
   dateDivider: {
     width: "0.5px",
     height: "28px",
@@ -575,13 +542,10 @@ const s = {
     borderRadius: "8px",
     padding: "8px 10px",
   },
-  cardActions: {
-    borderTop: "0.5px solid #f0f0f0",
-    display: "flex",
-  },
+  cardActions: { borderTop: "0.5px solid #f0f0f0", display: "flex" },
   actionClear: {
     flex: 1,
-    padding: "9px",
+    padding: "10px",
     border: "none",
     background: "none",
     fontSize: "12px",
@@ -590,7 +554,7 @@ const s = {
   },
   actionDelete: {
     flex: 1,
-    padding: "9px",
+    padding: "10px",
     border: "none",
     background: "none",
     fontSize: "12px",
@@ -598,7 +562,7 @@ const s = {
     cursor: "pointer",
   },
   confirmBox: {
-    padding: "12px 14px",
+    padding: "12px 16px",
     borderTop: "0.5px solid #f0f0f0",
     background: "#fafafa",
   },
@@ -608,11 +572,7 @@ const s = {
     marginBottom: "10px",
     lineHeight: "1.5",
   },
-  confirmBtns: {
-    display: "flex",
-    gap: "8px",
-    justifyContent: "flex-end",
-  },
+  confirmBtns: { display: "flex", gap: "8px", justifyContent: "flex-end" },
   cancelBtn: {
     background: "none",
     border: "0.5px solid #e5e5e5",
@@ -644,23 +604,11 @@ const s = {
     background: "#fff",
     borderRadius: "14px",
     border: "0.5px solid #e5e5e5",
-    padding: "40px 20px",
+    padding: "60px 20px",
     textAlign: "center",
   },
-  emptyText: {
-    fontSize: "13px",
-    color: "#aaa",
-  },
-  emptyAction: {
-    marginTop: "12px",
-    background: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    padding: "8px 16px",
-    fontSize: "13px",
-    cursor: "pointer",
-  },
+  emptyText: { fontSize: "14px", color: "#444", fontWeight: "500" },
+  emptySubText: { fontSize: "12px", color: "#aaa", marginTop: "6px" },
 };
 
 export default Cheques;
