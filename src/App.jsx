@@ -119,8 +119,8 @@ function App() {
     }
   };
 
-  const SidebarContent = () => (
-    <div style={styles.sidebarInner}>
+  const SidebarContent = ({ width }) => (
+    <div style={{ ...styles.sidebarInner, width: `${width}px` }}>
       <div style={styles.sidebarLogo}>
         Cheque<span style={{ color: "#2563eb" }}>Mate</span>
       </div>
@@ -151,53 +151,17 @@ function App() {
         })}
       </nav>
 
-      <button
-        style={styles.newChequeBtn}
-        onClick={() => {
-          setShowAddCheque(true);
-          setDrawerOpen(false);
-        }}
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#fff"
-          strokeWidth="2.2"
-        >
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        New cheque
-      </button>
-    </div>
-  );
-
-  return (
-    <div style={styles.root}>
-      {/* Desktop sidebar */}
-      <aside style={styles.sidebar}>
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile top bar */}
-      <div style={styles.mobileTopbar} className="cm-mobile-topbar">
-        <button style={styles.hamburger} onClick={() => setDrawerOpen(true)}>
-          <div style={styles.hamburgerLine} />
-          <div style={styles.hamburgerLine} />
-          <div style={styles.hamburgerLine} />
-        </button>
-        <p style={styles.mobileLogoText}>
-          Cheque<span style={{ color: "#2563eb" }}>Mate</span>
-        </p>
+      <div style={styles.sidebarBottom}>
         <button
-          style={styles.mobileAddBtn}
-          onClick={() => setShowAddCheque(true)}
+          style={styles.newChequeBtn}
+          onClick={() => {
+            setShowAddCheque(true);
+            setDrawerOpen(false);
+          }}
         >
           <svg
-            width="18"
-            height="18"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="#fff"
@@ -206,29 +170,83 @@ function App() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
+          New cheque
         </button>
       </div>
-
-      {/* Mobile drawer overlay */}
-      {drawerOpen && (
-        <div style={styles.overlay} onClick={() => setDrawerOpen(false)} />
-      )}
-
-      {/* Mobile drawer */}
-      <div
-        style={{
-          ...styles.drawer,
-          transform: drawerOpen
-            ? "translateX(0)"
-            : `translateX(-${SIDEBAR_WIDTH}px)`,
-        }}
-      >
-        <SidebarContent />
-      </div>
-
-      {/* Main content */}
-      <main style={styles.main}>{renderScreen()}</main>
     </div>
+  );
+
+  return (
+    <>
+      {/* Inject media query styles */}
+      <style>{`
+        @media (min-width: 768px) {
+          .cm-sidebar { display: flex !important; }
+          .cm-mobile-topbar { display: none !important; }
+          .cm-main { padding-top: 0 !important; }
+        }
+        @media (max-width: 767px) {
+          .cm-sidebar { display: none !important; }
+        }
+      `}</style>
+
+      <div style={styles.root}>
+        {/* Desktop sidebar */}
+        <div className="cm-sidebar" style={styles.sidebar}>
+          <SidebarContent width={SIDEBAR_WIDTH} />
+        </div>
+
+        {/* Mobile top bar */}
+        <div className="cm-mobile-topbar" style={styles.mobileTopbar}>
+          <button style={styles.hamburger} onClick={() => setDrawerOpen(true)}>
+            <div style={styles.hamburgerLine} />
+            <div style={styles.hamburgerLine} />
+            <div style={styles.hamburgerLine} />
+          </button>
+          <p style={styles.mobileLogoText}>
+            Cheque<span style={{ color: "#2563eb" }}>Mate</span>
+          </p>
+          <button
+            style={styles.mobileAddBtn}
+            onClick={() => setShowAddCheque(true)}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              strokeWidth="2.2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile overlay */}
+        {drawerOpen && (
+          <div style={styles.overlay} onClick={() => setDrawerOpen(false)} />
+        )}
+
+        {/* Mobile drawer */}
+        <div
+          style={{
+            ...styles.drawer,
+            transform: drawerOpen
+              ? "translateX(0)"
+              : `translateX(-${SIDEBAR_WIDTH}px)`,
+          }}
+        >
+          <SidebarContent width={SIDEBAR_WIDTH} />
+        </div>
+
+        {/* Main */}
+        <main className="cm-main" style={styles.main}>
+          {renderScreen()}
+        </main>
+      </div>
+    </>
   );
 }
 
@@ -239,6 +257,8 @@ const styles = {
     background: "#f5f5f0",
     overflow: "hidden",
   },
+
+  // Sidebar
   sidebar: {
     width: `${SIDEBAR_WIDTH}px`,
     flexShrink: 0,
@@ -246,35 +266,39 @@ const styles = {
     borderRight: "0.5px solid #e5e5e5",
     height: "100dvh",
     overflowY: "auto",
-    display: "none",
+    display: "none", // overridden by media query
   },
+
   sidebarInner: {
     display: "flex",
     flexDirection: "column",
-    padding: "24px 0",
     height: "100%",
+    overflow: "hidden",
   },
+
   sidebarLogo: {
     fontSize: "20px",
     fontWeight: "500",
     letterSpacing: "-0.5px",
     color: "#111",
-    padding: "0 20px 24px",
+    padding: "24px 20px 20px",
     borderBottom: "0.5px solid #f0f0f0",
-    marginBottom: "12px",
+    flexShrink: 0,
   },
+
   sidebarNav: {
     display: "flex",
     flexDirection: "column",
     gap: "2px",
     flex: 1,
-    padding: "0 12px",
+    padding: "12px 10px 0",
   },
+
   sidebarItem: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    padding: "10px 12px",
+    padding: "10px 14px",
     borderRadius: "10px",
     border: "none",
     background: "none",
@@ -282,18 +306,29 @@ const styles = {
     width: "100%",
     textAlign: "left",
     boxSizing: "border-box",
+    flexShrink: 0,
   },
+
   sidebarItemActive: {
     background: "#eff6ff",
   },
+
   sidebarLabel: {
     fontSize: "14px",
     color: "#666",
+    whiteSpace: "nowrap",
   },
+
   sidebarLabelActive: {
     color: "#2563eb",
     fontWeight: "500",
   },
+
+  sidebarBottom: {
+    padding: "12px 10px 24px",
+    flexShrink: 0,
+  },
+
   newChequeBtn: {
     display: "flex",
     alignItems: "center",
@@ -303,14 +338,15 @@ const styles = {
     color: "#fff",
     border: "none",
     borderRadius: "10px",
-    padding: "12px 16px",
+    padding: "12px",
     fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    margin: "16px 12px 0",
-    width: "calc(100% - 24px)",
+    width: "100%",
     boxSizing: "border-box",
   },
+
+  // Mobile topbar
   mobileTopbar: {
     display: "flex",
     alignItems: "center",
@@ -325,12 +361,14 @@ const styles = {
     right: 0,
     zIndex: 200,
   },
+
   mobileLogoText: {
     fontSize: "18px",
     fontWeight: "500",
     letterSpacing: "-0.5px",
     color: "#111",
   },
+
   hamburger: {
     background: "none",
     border: "none",
@@ -340,12 +378,14 @@ const styles = {
     gap: "4px",
     padding: "4px",
   },
+
   hamburgerLine: {
     width: "20px",
     height: "2px",
     background: "#444",
     borderRadius: "2px",
   },
+
   mobileAddBtn: {
     width: "34px",
     height: "34px",
@@ -357,12 +397,14 @@ const styles = {
     justifyContent: "center",
     cursor: "pointer",
   },
+
   overlay: {
     position: "fixed",
     inset: 0,
     background: "rgba(0,0,0,0.3)",
     zIndex: 300,
   },
+
   drawer: {
     position: "fixed",
     top: 0,
@@ -375,6 +417,7 @@ const styles = {
     transition: "transform 0.25s ease",
     overflowY: "auto",
   },
+
   main: {
     flex: 1,
     overflowY: "auto",
