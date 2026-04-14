@@ -12,8 +12,8 @@ const NAV_ITEMS = [
     label: "Dashboard",
     icon: (active) => (
       <svg
-        width="22"
-        height="22"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         stroke={active ? "#2563eb" : "#aaa"}
@@ -31,8 +31,8 @@ const NAV_ITEMS = [
     label: "Cheques",
     icon: (active) => (
       <svg
-        width="22"
-        height="22"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         stroke={active ? "#2563eb" : "#aaa"}
@@ -50,8 +50,8 @@ const NAV_ITEMS = [
     label: "Banks",
     icon: (active) => (
       <svg
-        width="22"
-        height="22"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         stroke={active ? "#2563eb" : "#aaa"}
@@ -66,6 +66,7 @@ const NAV_ITEMS = [
 ];
 
 const SIDEBAR_WIDTH = 220;
+const MOBILE_TOPBAR_HEIGHT = 52;
 
 function App() {
   const [activeScreen, setActiveScreen] = useState("dashboard");
@@ -125,30 +126,29 @@ function App() {
       </div>
 
       <nav style={styles.sidebarNav}>
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            style={{
-              ...styles.sidebarItem,
-              ...(activeScreen === item.id && !showAddCheque
-                ? styles.sidebarItemActive
-                : {}),
-            }}
-            onClick={() => navigate(item.id)}
-          >
-            {item.icon(activeScreen === item.id && !showAddCheque)}
-            <span
+        {NAV_ITEMS.map((item) => {
+          const isActive = activeScreen === item.id && !showAddCheque;
+          return (
+            <button
+              key={item.id}
               style={{
-                ...styles.sidebarLabel,
-                ...(activeScreen === item.id && !showAddCheque
-                  ? styles.sidebarLabelActive
-                  : {}),
+                ...styles.sidebarItem,
+                ...(isActive ? styles.sidebarItemActive : {}),
               }}
+              onClick={() => navigate(item.id)}
             >
-              {item.label}
-            </span>
-          </button>
-        ))}
+              {item.icon(isActive)}
+              <span
+                style={{
+                  ...styles.sidebarLabel,
+                  ...(isActive ? styles.sidebarLabelActive : {}),
+                }}
+              >
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
       </nav>
 
       <button
@@ -232,8 +232,6 @@ function App() {
   );
 }
 
-const MOBILE_TOPBAR_HEIGHT = 52;
-
 const styles = {
   root: {
     display: "flex",
@@ -241,8 +239,6 @@ const styles = {
     background: "#f5f5f0",
     overflow: "hidden",
   },
-
-  // Desktop sidebar
   sidebar: {
     width: `${SIDEBAR_WIDTH}px`,
     flexShrink: 0,
@@ -250,33 +246,30 @@ const styles = {
     borderRight: "0.5px solid #e5e5e5",
     height: "100dvh",
     overflowY: "auto",
-    display: "none", // hidden on mobile, shown via media query workaround below
+    display: "none",
   },
-
   sidebarInner: {
     display: "flex",
     flexDirection: "column",
-    padding: "24px 12px",
+    padding: "24px 0",
     height: "100%",
   },
-
   sidebarLogo: {
     fontSize: "20px",
     fontWeight: "500",
     letterSpacing: "-0.5px",
     color: "#111",
-    padding: "0 8px 24px",
+    padding: "0 20px 24px",
     borderBottom: "0.5px solid #f0f0f0",
     marginBottom: "12px",
   },
-
   sidebarNav: {
     display: "flex",
     flexDirection: "column",
     gap: "2px",
     flex: 1,
+    padding: "0 12px",
   },
-
   sidebarItem: {
     display: "flex",
     alignItems: "center",
@@ -288,22 +281,19 @@ const styles = {
     cursor: "pointer",
     width: "100%",
     textAlign: "left",
+    boxSizing: "border-box",
   },
-
   sidebarItemActive: {
     background: "#eff6ff",
   },
-
   sidebarLabel: {
     fontSize: "14px",
     color: "#666",
   },
-
   sidebarLabelActive: {
     color: "#2563eb",
     fontWeight: "500",
   },
-
   newChequeBtn: {
     display: "flex",
     alignItems: "center",
@@ -313,15 +303,14 @@ const styles = {
     color: "#fff",
     border: "none",
     borderRadius: "10px",
-    padding: "11px 16px",
+    padding: "12px 16px",
     fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    marginTop: "16px",
-    width: "100%",
+    margin: "16px 12px 0",
+    width: "calc(100% - 24px)",
+    boxSizing: "border-box",
   },
-
-  // Mobile topbar
   mobileTopbar: {
     display: "flex",
     alignItems: "center",
@@ -335,16 +324,13 @@ const styles = {
     left: 0,
     right: 0,
     zIndex: 200,
-    // hide on desktop via inline override below
   },
-
   mobileLogoText: {
     fontSize: "18px",
     fontWeight: "500",
     letterSpacing: "-0.5px",
     color: "#111",
   },
-
   hamburger: {
     background: "none",
     border: "none",
@@ -354,14 +340,12 @@ const styles = {
     gap: "4px",
     padding: "4px",
   },
-
   hamburgerLine: {
     width: "20px",
     height: "2px",
     background: "#444",
     borderRadius: "2px",
   },
-
   mobileAddBtn: {
     width: "34px",
     height: "34px",
@@ -373,15 +357,12 @@ const styles = {
     justifyContent: "center",
     cursor: "pointer",
   },
-
-  // Drawer
   overlay: {
     position: "fixed",
     inset: 0,
     background: "rgba(0,0,0,0.3)",
     zIndex: 300,
   },
-
   drawer: {
     position: "fixed",
     top: 0,
@@ -394,8 +375,6 @@ const styles = {
     transition: "transform 0.25s ease",
     overflowY: "auto",
   },
-
-  // Main content area
   main: {
     flex: 1,
     overflowY: "auto",

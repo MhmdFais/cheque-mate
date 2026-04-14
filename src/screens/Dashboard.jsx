@@ -357,7 +357,10 @@ const Dashboard = ({
 };
 
 const s = {
-  screen: { minHeight: "100%", background: "#f5f5f0" },
+  screen: {
+    minHeight: "100%",
+    background: "#f5f5f0",
+  },
   header: {
     background: "#fff",
     padding: "20px 28px",
@@ -375,7 +378,11 @@ const s = {
     color: "#111",
     letterSpacing: "-0.3px",
   },
-  date: { fontSize: "13px", color: "#aaa", marginTop: "3px" },
+  date: {
+    fontSize: "13px",
+    color: "#aaa",
+    marginTop: "3px",
+  },
   headerAddBtn: {
     background: "#2563eb",
     color: "#fff",
@@ -387,9 +394,11 @@ const s = {
     cursor: "pointer",
     flexShrink: 0,
   },
-  body: { padding: "28px 28px 40px", maxWidth: "900px" },
+  body: {
+    padding: "28px 28px 40px",
+  },
   sectionLabel: {
-    fontSize: "10px",
+    fontSize: "12px",
     fontWeight: "500",
     letterSpacing: "0.08em",
     textTransform: "uppercase",
@@ -398,7 +407,7 @@ const s = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
     gap: "10px",
     marginBottom: "4px",
   },
@@ -409,7 +418,9 @@ const s = {
     borderLeft: "3px solid #e5e5e5",
     overflow: "hidden",
   },
-  cardInner: { padding: "14px 16px" },
+  cardInner: {
+    padding: "16px 18px",
+  },
   cardRow1: {
     display: "flex",
     justifyContent: "space-between",
@@ -424,18 +435,26 @@ const s = {
     minWidth: 0,
   },
   bankDot: {
-    width: "34px",
-    height: "34px",
+    width: "36px",
+    height: "36px",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "12px",
+    fontSize: "14px",
     fontWeight: "500",
     flexShrink: 0,
   },
-  recipient: { fontSize: "14px", fontWeight: "500", color: "#111" },
-  chequeNum: { fontSize: "10px", color: "#aaa", marginTop: "2px" },
+  recipient: {
+    fontSize: "16px",
+    fontWeight: "500",
+    color: "#111",
+  },
+  chequeNum: {
+    fontSize: "12px",
+    color: "#aaa",
+    marginTop: "2px",
+  },
   amountPill: {
     background: "#eff6ff",
     border: "0.5px solid #bfdbfe",
@@ -445,7 +464,7 @@ const s = {
     marginLeft: "8px",
   },
   amount: {
-    fontSize: "13px",
+    fontSize: "14px",
     fontWeight: "600",
     color: "#1d4ed8",
     fontVariantNumeric: "tabular-nums",
@@ -455,10 +474,17 @@ const s = {
     justifyContent: "space-between",
     alignItems: "center",
   },
-  bankInfo: { display: "flex", alignItems: "center", gap: "6px" },
-  bankName: { fontSize: "11px", color: "#888" },
+  bankInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  bankName: {
+    fontSize: "13px",
+    color: "#888",
+  },
   dueBadge: {
-    fontSize: "10px",
+    fontSize: "12px",
     padding: "2px 8px",
     borderRadius: "20px",
     fontWeight: "500",
@@ -505,7 +531,11 @@ const s = {
     marginBottom: "10px",
     lineHeight: "1.5",
   },
-  confirmBtns: { display: "flex", gap: "8px", justifyContent: "flex-end" },
+  confirmBtns: {
+    display: "flex",
+    gap: "8px",
+    justifyContent: "flex-end",
+  },
   cancelBtn: {
     background: "none",
     border: "0.5px solid #e5e5e5",
@@ -521,7 +551,7 @@ const s = {
     border: "none",
     borderRadius: "8px",
     padding: "6px 14px",
-    fontSize: "12px",
+    fontSize: "14px",
     cursor: "pointer",
   },
   deleteBtn: {
@@ -530,7 +560,7 @@ const s = {
     border: "none",
     borderRadius: "8px",
     padding: "6px 14px",
-    fontSize: "12px",
+    fontSize: "14px",
     cursor: "pointer",
   },
   filterRow: {
@@ -544,7 +574,7 @@ const s = {
     border: "0.5px solid #e5e5e5",
     borderRadius: "20px",
     padding: "5px 14px",
-    fontSize: "12px",
+    fontSize: "14px",
     color: "#666",
     cursor: "pointer",
     whiteSpace: "nowrap",
@@ -556,7 +586,11 @@ const s = {
     color: "#2563eb",
     fontWeight: "500",
   },
-  divider: { height: "0.5px", background: "#e5e5e5", margin: "24px 0" },
+  divider: {
+    height: "0.5px",
+    background: "#e5e5e5",
+    margin: "24px 0",
+  },
   emptyBox: {
     background: "#fff",
     borderRadius: "14px",
@@ -564,8 +598,16 @@ const s = {
     padding: "40px 20px",
     textAlign: "center",
   },
-  emptyText: { fontSize: "14px", color: "#444", fontWeight: "500" },
-  emptySubText: { fontSize: "12px", color: "#aaa", marginTop: "6px" },
+  emptyText: {
+    fontSize: "14px",
+    color: "#444",
+    fontWeight: "500",
+  },
+  emptySubText: {
+    fontSize: "14px",
+    color: "#aaa",
+    marginTop: "6px",
+  },
 };
 
 export default Dashboard;

@@ -370,7 +370,10 @@ const Cheques = ({
 };
 
 const s = {
-  screen: { minHeight: "100%", background: "#f5f5f0" },
+  screen: {
+    minHeight: "100%",
+    background: "#f5f5f0",
+  },
   header: {
     background: "#fff",
     padding: "20px 28px",
@@ -388,7 +391,11 @@ const s = {
     color: "#111",
     letterSpacing: "-0.3px",
   },
-  pageSubtitle: { fontSize: "13px", color: "#aaa", marginTop: "3px" },
+  pageSubtitle: {
+    fontSize: "13px",
+    color: "#aaa",
+    marginTop: "3px",
+  },
   headerAddBtn: {
     background: "#2563eb",
     color: "#fff",
@@ -420,7 +427,7 @@ const s = {
     border: "0.5px solid #e5e5e5",
     borderRadius: "20px",
     padding: "5px 14px",
-    fontSize: "12px",
+    fontSize: "14px",
     color: "#666",
     cursor: "pointer",
     whiteSpace: "nowrap",
@@ -432,11 +439,17 @@ const s = {
     color: "#2563eb",
     fontWeight: "500",
   },
-  body: { padding: "20px 28px 40px", maxWidth: "900px" },
-  countLabel: { fontSize: "12px", color: "#aaa", marginBottom: "12px" },
+  body: {
+    padding: "20px 28px 40px",
+  },
+  countLabel: {
+    fontSize: "14px",
+    color: "#aaa",
+    marginBottom: "12px",
+  },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
     gap: "10px",
   },
   card: {
@@ -446,7 +459,9 @@ const s = {
     borderLeft: "3px solid #e5e5e5",
     overflow: "hidden",
   },
-  cardInner: { padding: "14px 16px" },
+  cardInner: {
+    padding: "14px 16px",
+  },
   row1: {
     display: "flex",
     justifyContent: "space-between",
@@ -461,18 +476,26 @@ const s = {
     minWidth: 0,
   },
   bankDot: {
-    width: "34px",
-    height: "34px",
+    width: "36px",
+    height: "36px",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "12px",
+    fontSize: "14px",
     fontWeight: "500",
     flexShrink: 0,
   },
-  recipient: { fontSize: "14px", fontWeight: "500", color: "#111" },
-  chequeNum: { fontSize: "10px", color: "#aaa", marginTop: "1px" },
+  recipient: {
+    fontSize: "16px",
+    fontWeight: "500",
+    color: "#111",
+  },
+  chequeNum: {
+    fontSize: "12px",
+    color: "#aaa",
+    marginTop: "1px",
+  },
   rightCol: {
     display: "flex",
     flexDirection: "column",
@@ -488,19 +511,24 @@ const s = {
     padding: "4px 10px",
   },
   amount: {
-    fontSize: "13px",
+    fontSize: "14px",
     fontWeight: "600",
     color: "#1d4ed8",
     fontVariantNumeric: "tabular-nums",
   },
   statusChip: {
-    fontSize: "10px",
+    fontSize: "12px",
     padding: "2px 8px",
     borderRadius: "20px",
     fontWeight: "500",
   },
-  row2: { marginBottom: "10px" },
-  bankName: { fontSize: "11px", color: "#888" },
+  row2: {
+    marginBottom: "10px",
+  },
+  bankName: {
+    fontSize: "13px",
+    color: "#888",
+  },
   datesRow: {
     display: "flex",
     alignItems: "center",
@@ -509,15 +537,27 @@ const s = {
     borderRadius: "8px",
     padding: "8px 10px",
   },
-  dateItem: { display: "flex", flexDirection: "column", gap: "2px", flex: 1 },
+  dateItem: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
+    flex: 1,
+  },
   dateLabel: {
-    fontSize: "9px",
+    fontSize: "10px",
     color: "#aaa",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
   },
-  dateValue: { fontSize: "11px", fontWeight: "500", color: "#111" },
-  daysAway: { fontWeight: "400", color: "#888" },
+  dateValue: {
+    fontSize: "13px",
+    fontWeight: "500",
+    color: "#111",
+  },
+  daysAway: {
+    fontWeight: "400",
+    color: "#888",
+  },
   dateDivider: {
     width: "0.5px",
     height: "28px",
@@ -527,14 +567,14 @@ const s = {
   noteToggle: {
     background: "none",
     border: "none",
-    fontSize: "11px",
+    fontSize: "13px",
     color: "#2563eb",
     cursor: "pointer",
     padding: "6px 0 0",
     display: "block",
   },
   noteText: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: "#666",
     marginTop: "6px",
     lineHeight: "1.5",
@@ -542,7 +582,10 @@ const s = {
     borderRadius: "8px",
     padding: "8px 10px",
   },
-  cardActions: { borderTop: "0.5px solid #f0f0f0", display: "flex" },
+  cardActions: {
+    borderTop: "0.5px solid #f0f0f0",
+    display: "flex",
+  },
   actionClear: {
     flex: 1,
     padding: "10px",
@@ -572,7 +615,11 @@ const s = {
     marginBottom: "10px",
     lineHeight: "1.5",
   },
-  confirmBtns: { display: "flex", gap: "8px", justifyContent: "flex-end" },
+  confirmBtns: {
+    display: "flex",
+    gap: "8px",
+    justifyContent: "flex-end",
+  },
   cancelBtn: {
     background: "none",
     border: "0.5px solid #e5e5e5",
@@ -607,8 +654,16 @@ const s = {
     padding: "60px 20px",
     textAlign: "center",
   },
-  emptyText: { fontSize: "14px", color: "#444", fontWeight: "500" },
-  emptySubText: { fontSize: "12px", color: "#aaa", marginTop: "6px" },
+  emptyText: {
+    fontSize: "14px",
+    color: "#444",
+    fontWeight: "500",
+  },
+  emptySubText: {
+    fontSize: "12px",
+    color: "#aaa",
+    marginTop: "6px",
+  },
 };
 
 export default Cheques;

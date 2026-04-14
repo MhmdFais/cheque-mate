@@ -275,7 +275,10 @@ const Banks = ({ banks, addBank, updateBalance, deleteBank }) => {
 };
 
 const s = {
-  screen: { minHeight: "100%", background: "#f5f5f0" },
+  screen: {
+    minHeight: "100%",
+    background: "#f5f5f0",
+  },
   header: {
     background: "#fff",
     padding: "20px 28px",
@@ -293,7 +296,11 @@ const s = {
     color: "#111",
     letterSpacing: "-0.3px",
   },
-  pageSubtitle: { fontSize: "13px", color: "#aaa", marginTop: "3px" },
+  pageSubtitle: {
+    fontSize: "13px",
+    color: "#aaa",
+    marginTop: "3px",
+  },
   headerAddBtn: {
     background: "#2563eb",
     color: "#fff",
@@ -304,7 +311,9 @@ const s = {
     fontWeight: "500",
     cursor: "pointer",
   },
-  body: { padding: "28px 28px 40px", maxWidth: "900px" },
+  body: {
+    padding: "28px 28px 40px",
+  },
   formCard: {
     background: "#fff",
     borderRadius: "14px",
@@ -324,9 +333,12 @@ const s = {
     gap: "12px",
     marginBottom: "12px",
   },
-  field: { display: "flex", flexDirection: "column" },
+  field: {
+    display: "flex",
+    flexDirection: "column",
+  },
   label: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: "#666",
     marginBottom: "5px",
     fontWeight: "500",
@@ -336,12 +348,16 @@ const s = {
     padding: "10px 12px",
     border: "0.5px solid #e5e5e5",
     borderRadius: "8px",
-    fontSize: "14px",
+    fontSize: "16px",
     color: "#111",
     background: "#fafafa",
     outline: "none",
   },
-  error: { fontSize: "12px", color: "#dc2626", marginBottom: "10px" },
+  error: {
+    fontSize: "12px",
+    color: "#dc2626",
+    marginBottom: "10px",
+  },
   formBtns: {
     display: "flex",
     gap: "8px",
@@ -366,19 +382,30 @@ const s = {
     padding: "16px 16px 0",
   },
   avatar: {
-    width: "44px",
-    height: "44px",
+    width: "46px",
+    height: "46px",
     borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "14px",
+    fontSize: "16px",
     fontWeight: "500",
     flexShrink: 0,
   },
-  cardInfo: { flex: 1, minWidth: 0 },
-  bankName: { fontSize: "15px", fontWeight: "500", color: "#111" },
-  accountNum: { fontSize: "11px", color: "#aaa", marginTop: "2px" },
+  cardInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  bankName: {
+    fontSize: "17px",
+    fontWeight: "500",
+    color: "#111",
+  },
+  accountNum: {
+    fontSize: "11px",
+    color: "#aaa",
+    marginTop: "2px",
+  },
   balanceBlock: {
     padding: "12px 16px 14px",
     borderBottom: "0.5px solid #f0f0f0",
@@ -401,10 +428,23 @@ const s = {
     padding: "12px 16px",
     alignItems: "center",
   },
-  confirmBox: { padding: "12px 16px", background: "#fafafa" },
-  confirmText: { fontSize: "13px", color: "#444", marginBottom: "10px" },
-  confirmBtns: { display: "flex", gap: "8px", justifyContent: "flex-end" },
-  cardActions: { display: "flex" },
+  confirmBox: {
+    padding: "12px 16px",
+    background: "#fafafa",
+  },
+  confirmText: {
+    fontSize: "13px",
+    color: "#444",
+    marginBottom: "10px",
+  },
+  confirmBtns: {
+    display: "flex",
+    gap: "8px",
+    justifyContent: "flex-end",
+  },
+  cardActions: {
+    display: "flex",
+  },
   actionUpdate: {
     flex: 1,
     padding: "11px",
@@ -458,8 +498,16 @@ const s = {
     padding: "60px 20px",
     textAlign: "center",
   },
-  emptyText: { fontSize: "15px", color: "#444", fontWeight: "500" },
-  emptySubText: { fontSize: "13px", color: "#aaa", marginTop: "6px" },
+  emptyText: {
+    fontSize: "15px",
+    color: "#444",
+    fontWeight: "500",
+  },
+  emptySubText: {
+    fontSize: "13px",
+    color: "#aaa",
+    marginTop: "6px",
+  },
 };
 
 export default Banks;
